@@ -41,11 +41,12 @@ if is_file:
     Stock_data = Stock_yf.history(period="max")
 
     # Add Number of Stocks
-    strArr = np.empty([len(Stock_data.index)], dtype=str)
+    strArr = np.empty([len(Stock_data.index)], dtype=int)
     for i in range(0, len(Stock_data.index) - 1):
-        strArr[i] = "1000"
+        tt = 1000
+        strArr[i] = tt
     Num_stocks = pd.DataFrame(strArr, columns=["Num Stocks"])
-    Stock_data["Num Stock"] = list(strArr)
+    Stock_data["Num Stock"] = strArr
 
     # Download Bonus history
     b = BSE()
@@ -95,13 +96,13 @@ if is_file:
     Filename = BSE_SENSEX.loc[input_number].at["Security Name"] + ".xlsx"
 
     # Transfer Stock price history to excel file
-    Stock_data.to_excel(Filename, sheet_name='Share_price_history')
+    Stock_data.to_excel(Filename, sheet_name='Share Price History')
 
     # Create a Pandas Excel writer using XlsxWriter engine
     writer = pd.ExcelWriter(Filename, engine='openpyxl', mode='a')
 
     # Convert the bonus history data frame to an XlsxWriter Excel object
-    Bonus_data.to_excel(writer, sheet_name='Bonus_history', index=False)
+    Bonus_data.to_excel(writer, sheet_name='Bonus History', index=False)
 
     # Close the Pandas Excel writer and output the Excel file
     writer.save()
