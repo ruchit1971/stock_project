@@ -111,8 +111,11 @@ if yu < int('2011'):
     current_year = today.year
     t = (current_year - int(year))
 
-    # Interest
+    # Interest without Inflation
     r = (n * (((A + ini_div) / P) ** (1 / (n * t)) - 1)) * 100
+
+    # Interest with Inflation
+    #r_with_inflation =
 
     print("The interest rate is " + str(r))
 
