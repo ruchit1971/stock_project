@@ -31,7 +31,16 @@ is_file = 1
 if is_file:
     # Download selected stock history
     Stock_yf = yf.Ticker(Stock + ".BO")
-    Stock_data = Stock_yf.history(period="max")
+    data_his = Stock_yf.history(period="max")
+
+    AA1 = data_his[['Dividends', 'Stock Splits']]
+
+    down_data = yf.download(Stock + ".BO", period = "max")
+
+    frames = [down_data, AA1]
+    Stock_data = pd.concat(frames, axis=1, join='inner')
+
+
 
     # Add Number of Stocks
     strArr = np.empty([len(Stock_data.index)], dtype=int)

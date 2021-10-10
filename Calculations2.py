@@ -4,7 +4,6 @@ import yfinance as yf
 import pandas as pd
 from datetime import date
 
-
 BSE_SENSEX = pd.read_excel('Equity.xlsx')
 
 # Remove Unnecessary Columns
@@ -31,7 +30,6 @@ Filename = BSE_SENSEX.loc[input_number].at["Security Name"] + ".xlsx"
 
 # Read Excel File according to stock name and create data frame
 stock_price_history = pd.read_excel(Filename, sheet_name='Share Price History')
-bonus_history = pd.read_excel(Filename, sheet_name='Bonus History')
 
 # Check if 10 years is possible or not!
 today = date.today()
@@ -39,15 +37,14 @@ current_month = today.month
 year_from_data = stock_price_history.loc[1].at["Date"]
 yu = year_from_data.year
 
-
 # Enter Year
-year = str(current_month) + '-'+'2011'
-year_5 = str(current_month) + '-'+'2016'
+year = '2011'
+year_5 = '2016'
 
 if yu < int('2011'):
     # Calculate for 10 years
     # Extract Stock price history based on year
-    A1 = stock_price_history[(stock_price_history['Date'] > year)]
+    A1 = stock_price_history[(stock_price_history['Date'] > str(current_month) + '-' + year)]
     A2 = A1[['Date', 'Close']]
 
     # Find the index values for initial and end stock price
@@ -59,11 +56,8 @@ if yu < int('2011'):
     initial_stock_price = A2.loc[first_index].at["Close"]
     end_stock_price = A2.loc[last_index].at["Close"]
 
-    # Extract Bonus history based on year
-    B1 = bonus_history[(bonus_history['Date'] > year)]
-
     # Extract Dividend info
-    D1 = stock_price_history[(stock_price_history['Date'] > year)]
+    D1 = stock_price_history[(stock_price_history['Date'] > str(current_month) + '-' + year)]
     D2 = D1[['Date', 'Dividends', 'Stock Splits']]
     D3 = D1[['Date', 'Dividends']]
     Splits_nonzero = D2[(D2['Stock Splits'] > 0)]
@@ -119,14 +113,14 @@ if yu < int('2011'):
     r = (n * (((A + ini_div) / P) ** (1 / (n * t)) - 1)) * 100
 
     # Interest with Inflation
-    #r_with_inflation =
+    # r_with_inflation =
 
     print("The interest rate is " + str(r))
 
     ################# Calculate for 5 years ##################
     # Calculate for 5 years
     # Extract Stock price history based on year
-    A1_5 = stock_price_history[(stock_price_history['Date'] > year_5)]
+    A1_5 = stock_price_history[(stock_price_history['Date'] > str(current_month) + '-' + year_5)]
     A2_5 = A1_5[['Date', 'Close']]
 
     # Find the index values for initial and end stock price
@@ -138,11 +132,8 @@ if yu < int('2011'):
     initial_stock_price_5 = A2_5.loc[first_index_5].at["Close"]
     end_stock_price_5 = A2_5.loc[last_index_5].at["Close"]
 
-    # Extract Bonus history based on year
-    B1_5 = bonus_history[(bonus_history['Date'] > year_5)]
-
     # Extract Dividend info
-    D1_5 = stock_price_history[(stock_price_history['Date'] > year_5)]
+    D1_5 = stock_price_history[(stock_price_history['Date'] > str(current_month) + '-' + year_5)]
     D2_5 = D1_5[['Date', 'Dividends', 'Stock Splits']]
     D3_5 = D1_5[['Date', 'Dividends']]
     Splits_nonzero_5 = D2_5[(D2_5['Stock Splits'] > 0)]
@@ -219,9 +210,6 @@ else:
     # Based on Index values, Extract initial and end stock price
     initial_stock_price = A2.loc[first_index].at["Close"]
     end_stock_price = A2.loc[last_index].at["Close"]
-
-    # Extract Bonus history based on year
-    B1 = bonus_history[(bonus_history['Date'] > year)]
 
     # Extract Dividend info
     D1 = stock_price_history[(stock_price_history['Date'] > year)]
