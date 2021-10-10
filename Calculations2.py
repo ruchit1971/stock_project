@@ -1,9 +1,9 @@
 ############################# LIBRARIES ################################
-from bselib.bse import BSE
 import numpy as np
 import yfinance as yf
 import pandas as pd
 from datetime import date
+
 
 BSE_SENSEX = pd.read_excel('Equity.xlsx')
 
@@ -34,11 +34,15 @@ stock_price_history = pd.read_excel(Filename, sheet_name='Share Price History')
 bonus_history = pd.read_excel(Filename, sheet_name='Bonus History')
 
 # Check if 10 years is possible or not!
+today = date.today()
+current_month = today.month
 year_from_data = stock_price_history.loc[1].at["Date"]
 yu = year_from_data.year
+
+
 # Enter Year
-year = '2011'
-year_5 = '2016'
+year = str(current_month) + '-'+'2011'
+year_5 = str(current_month) + '-'+'2016'
 
 if yu < int('2011'):
     # Calculate for 10 years

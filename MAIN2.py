@@ -1,16 +1,9 @@
 ############################# LIBRARIES ################################
 from datetime import date
-
-from bselib.bse import BSE
 import numpy as np
 import yfinance as yf
 import pandas as pd
 
-# BSE Sensex Stocks list
-##BSE_SENSEX = pd.read_html('https://en.wikipedia.org/wiki/BSE_SENSEX')[1]
-
-# read_file = pd.read_csv (r'Equity.csv')
-# read_file.to_excel (r'Equity.xlsx', index = None, header=True)
 
 BSE_SENSEX = pd.read_excel('Equity.xlsx')
 
@@ -48,49 +41,6 @@ if is_file:
     Num_stocks = pd.DataFrame(strArr, columns=["Num Stocks"])
     Stock_data["Num Stock"] = strArr
 
-    # Download Bonus history
-    b = BSE()
-    corp_action_data = b.corporate_actions(BSE_SENSEX.loc[input_number].at["Security Code"])
-
-    Bonus_dict = corp_action_data["bonus"]
-
-    if len(corp_action_data["bonus"]["msg"]) > 0:
-        print("No Bonus")
-        # Create empty bonus data
-        Bonus_empty = ['0']
-        Date_empty = [date.today()]
-        Date = pd.DataFrame(Date_empty, columns=["Date"])
-        today_pd = pd.to_datetime(Date.Date)
-        Bonus_empty_pd = pd.DataFrame(Bonus_empty, columns=['Bonus'])
-
-        frames_pd = [today_pd, Bonus_empty_pd]
-        Bonus_data = pd.concat(frames_pd, axis=1, join='inner')
-    else:
-        print("Bonus data is available")
-        Bonus = []
-        Date = []
-        for index in corp_action_data["bonus"]["data"]:
-            Bonus.append(index[2])
-            Date.append(index[1])
-
-        Bonus.reverse()
-        Date.reverse()
-
-        ee = []
-        rr = []
-        for i in range(0, len(Bonus)):
-            x = Bonus[i].split(":")
-            e = Date[i].split("-")
-            rr.append(e[2])
-            ee.append(int(x[0]) / int(x[1]))
-
-        Date = pd.DataFrame(Date, columns=["Date"])
-        Date_new = pd.to_datetime(Date.Date)
-        Bonus = pd.DataFrame(ee, columns=['Bonus'])
-
-        frames = [Date_new, Bonus]
-        Bonus_data = pd.concat(frames, axis=1, join='inner')
-
     # Save data in Excel file
     # Create file name based on stock name
     Filename = BSE_SENSEX.loc[input_number].at["Security Name"] + ".xlsx"
@@ -100,9 +50,6 @@ if is_file:
 
     # Create a Pandas Excel writer using XlsxWriter engine
     writer = pd.ExcelWriter(Filename, engine='openpyxl', mode='a')
-
-    # Convert the bonus history data frame to an XlsxWriter Excel object
-    Bonus_data.to_excel(writer, sheet_name='Bonus History', index=False)
 
     # Close the Pandas Excel writer and output the Excel file
     writer.save()
