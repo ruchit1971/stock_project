@@ -5,7 +5,7 @@ import yfinance as yf
 import pandas as pd
 
 
-BSE_SENSEX = pd.read_excel('Equity.xlsx')
+BSE_SENSEX = pd.read_excel('Equity_active.xlsx')
 
 # Remove Unnecessary Columns
 del BSE_SENSEX["Group"]
@@ -33,37 +33,40 @@ if is_file:
     Stock_yf = yf.Ticker(Stock + ".BO")
     data_his = Stock_yf.history(period="max")
 
-    AA1 = data_his[['Dividends', 'Stock Splits']]
+    if data_his.empty:
+        print('The file is empty!')
+    else:
+        AA1 = data_his[['Dividends', 'Stock Splits']]
 
-    down_data = yf.download(Stock + ".BO", period = "max")
+        down_data = yf.download(Stock + ".BO", period="max")
 
-    frames = [down_data, AA1]
-    Stock_data = pd.concat(frames, axis=1, join='inner')
+        frames = [down_data, AA1]
+        Stock_data = pd.concat(frames, axis=1, join='inner')
 
+        # Add Number of Stocks
+        strArr = np.empty([len(Stock_data.index)], dtype=int)
+        for i in range(0, len(Stock_data.index) - 1):
+            tt = 1000
+            strArr[i] = tt
+        Num_stocks = pd.DataFrame(strArr, columns=["Num Stocks"])
+        Stock_data["Num Stock"] = strArr
 
+        # Save data in Excel file
+        # Create file name based on stock name
+        rr = BSE_SENSEX.loc[input_number].at["Security Name"]
+        Filename = BSE_SENSEX.loc[input_number].at["Security Name"] + ".xlsx"
+        FilePathName = r"/Users/ruchitbhikadiya/Desktop/stock_project/Excel_Files_Stocks/" + Filename
 
-    # Add Number of Stocks
-    strArr = np.empty([len(Stock_data.index)], dtype=int)
-    for i in range(0, len(Stock_data.index) - 1):
-        tt = 1000
-        strArr[i] = tt
-    Num_stocks = pd.DataFrame(strArr, columns=["Num Stocks"])
-    Stock_data["Num Stock"] = strArr
+        # Transfer Stock price history to excel file
+        Stock_data.to_excel(FilePathName, sheet_name='Share Price History')
 
-    # Save data in Excel file
-    # Create file name based on stock name
-    Filename = BSE_SENSEX.loc[input_number].at["Security Name"] + ".xlsx"
+        # Create a Pandas Excel writer using XlsxWriter engine
+        writer = pd.ExcelWriter(FilePathName, engine='openpyxl', mode='a')
 
-    # Transfer Stock price history to excel file
-    Stock_data.to_excel(Filename, sheet_name='Share Price History')
+        # Close the Pandas Excel writer and output the Excel file
+        writer.save()
 
-    # Create a Pandas Excel writer using XlsxWriter engine
-    writer = pd.ExcelWriter(Filename, engine='openpyxl', mode='a')
-
-    # Close the Pandas Excel writer and output the Excel file
-    writer.save()
-
-    print("The data is stored in Excel file")
+        print("The data is stored in Excel file")
 
 else:
     print("File is already saved")
